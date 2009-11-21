@@ -55,8 +55,7 @@ def open_resource(name):
     cache_key = 'pytz.zoneinfo.%s.%s' % (pytz.OLSON_VERSION, name)
     zonedata = memcache.get(cache_key)
     if zonedata is None:
-        filename = os.path.join('zoneinfo', *name_parts).replace('\\','/')
-        zonedata = get_zoneinfo().read(filename)
+        zonedata = get_zoneinfo().read(os.path.join('zoneinfo', *name_parts))
         memcache.add(cache_key, zonedata)
         logging.info('Added timezone to memcache: %s' % cache_key)
     else:
