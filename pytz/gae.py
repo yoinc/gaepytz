@@ -45,23 +45,25 @@ def get_zoneinfo():
     return zoneinfo
 
 
-def open_resource(name):
-    """Open a resource from the zoneinfo subdir for reading."""
-    name_parts = name.lstrip('/').split('/')
-    for part in name_parts:
-        if part == os.path.pardir or os.path.sep in part:
-            raise ValueError('Bad path segment: %r' % part)
+class TimezoneLoader(pytz.TimezoneLoader):
+    """A loader that that reads timezones using ZipFile."""
+    def open_resource(self, name):
+        """Opens a resource from the zoneinfo subdir for reading."""
+        name_parts = name.lstrip('/').split('/')
+        for part in name_parts:
+            if part == os.path.pardir or os.path.sep in part:
+                raise ValueError('Bad path segment: %r' % part)
 
-    cache_key = 'pytz.zoneinfo.%s.%s' % (pytz.OLSON_VERSION, name)
-    zonedata = memcache.get(cache_key)
-    if zonedata is None:
-        zonedata = get_zoneinfo().read(os.path.join('zoneinfo', *name_parts))
-        memcache.add(cache_key, zonedata)
-        logging.info('Added timezone to memcache: %s' % cache_key)
-    else:
-        logging.info('Loaded timezone from memcache: %s' % cache_key)
+        cache_key = 'pytz.zoneinfo.%s.%s' % (pytz.OLSON_VERSION, name)
+        zonedata = memcache.get(cache_key)
+        if zonedata is None:
+            zonedata = get_zoneinfo().read(os.path.join('zoneinfo', *name_parts))
+            memcache.add(cache_key, zonedata)
+            logging.info('Added timezone to memcache: %s' % cache_key)
+        else:
+            logging.info('Loaded timezone from memcache: %s' % cache_key)
 
-    return StringIO(zonedata)
+        return StringIO(zonedata)
 
 
-pytz.open_resource = open_resource
+pytz.loader = TimezoneLoader()
