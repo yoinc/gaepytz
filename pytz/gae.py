@@ -72,7 +72,8 @@ class TimezoneLoader(object):
         """Return true if the given resource exists"""
         if name not in self.available:
             try:
-                get_zoneinfo().getinfo(name)
+                get_zoneinfo().getinfo(os.path.join('zoneinfo',
+                    *name.lstrip('/').split('/')))
                 self.available[name] = True
             except KeyError:
                 self.available[name] = False
