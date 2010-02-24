@@ -45,8 +45,11 @@ def get_zoneinfo():
     return zoneinfo
 
 
-class TimezoneLoader(pytz.TimezoneLoader):
+class TimezoneLoader(object):
     """A loader that that reads timezones using ZipFile."""
+    def __init__(self):
+        self.available = {}
+
     def open_resource(self, name):
         """Opens a resource from the zoneinfo subdir for reading."""
         name_parts = name.lstrip('/').split('/')
@@ -64,6 +67,17 @@ class TimezoneLoader(pytz.TimezoneLoader):
             logging.info('Loaded timezone from memcache: %s' % cache_key)
 
         return StringIO(zonedata)
+
+    def resource_exists(self, name):
+        """Return true if the given resource exists"""
+        if name not in self.available:
+            try:
+                get_zoneinfo().getinfo(name)
+                self.available[name] = True
+            except KeyError:
+                self.available[name] = False
+
+        return self.available[name]
 
 
 pytz.loader = TimezoneLoader()
