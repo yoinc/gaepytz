@@ -60,7 +60,7 @@ class TimezoneLoader(object):
         cache_key = 'pytz.zoneinfo.%s.%s' % (pytz.OLSON_VERSION, name)
         zonedata = memcache.get(cache_key)
         if zonedata is None:
-            zonedata = get_zoneinfo().read(os.path.join('zoneinfo', *name_parts))
+            zonedata = get_zoneinfo().read('/'.join('zoneinfo', *name_parts))
             memcache.add(cache_key, zonedata)
             logging.info('Added timezone to memcache: %s' % cache_key)
         else:
