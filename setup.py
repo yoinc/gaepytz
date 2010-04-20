@@ -44,5 +44,5 @@ setup(
     ],
     packages=['pytz'],
     include_package_data=True,
-    package_dir={'': '*.zip'},
+    package_data={'': ['*.zip']},
 )
