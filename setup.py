@@ -23,7 +23,7 @@ from setuptools import setup, find_packages
 
 
 setup(
-    name='gae-pytz',
+    name='gaepytz',
     version='2010l',
     url='http://code.google.com/p/gae-pytz/',
     license='MIT',
