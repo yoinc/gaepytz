@@ -24,7 +24,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='gaepytz',
-    version='2010l',
+    version='2011b',
     url='http://code.google.com/p/gae-pytz/',
     license='MIT',
     author='Rodrigo Moraes',
